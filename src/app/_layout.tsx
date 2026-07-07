@@ -1,19 +1,27 @@
-import { DarkTheme, ThemeProvider } from 'expo-router';
+import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import AppTabs from '@/components/app-tabs';
-import { AppThemeProvider } from '@/hooks/theme-context';
+import { AppThemeProvider, useAppTheme } from '@/hooks/theme-context';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function TabLayout() {
   return (
-    <ThemeProvider value={DarkTheme}>
-      <AppThemeProvider>
+    <AppThemeProvider>
+      <ThemedLayout />
+    </AppThemeProvider>
+  );
+}
+
+function ThemedLayout() {
+  const { themeId } = useAppTheme();
+
+  return (
+    <ThemeProvider value={themeId === 'calmLight' ? DefaultTheme : DarkTheme}>
         <AnimatedSplashOverlay />
         <AppTabs />
-      </AppThemeProvider>
     </ThemeProvider>
   );
 }
