@@ -22,10 +22,10 @@ const tabs = [
     icon: { ios: 'house.fill', android: 'home', web: 'home' },
   },
   {
-    name: 'coach',
-    href: '/coach',
-    label: 'Coach',
-    icon: { ios: 'message.fill', android: 'chat', web: 'chat' },
+    name: 'rescue',
+    href: '/rescue',
+    label: 'Rescue',
+    icon: { ios: 'bolt.fill', android: 'bolt', web: 'bolt' },
   },
   {
     name: 'journal',

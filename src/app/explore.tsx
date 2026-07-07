@@ -3,28 +3,31 @@ import { ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { useAppState } from '@/hooks/app-state';
 import { useTheme } from '@/hooks/use-theme';
 
-const patterns = [
-  { label: 'Risk time', value: '11 PM', detail: 'Evening phone use needs a gentle reset.' },
-  { label: 'Main trigger', value: 'Boredom', detail: 'Replace idle time with a 10 min task.' },
-  { label: 'Best action', value: 'Walk', detail: 'Most helpful replacement this week.' },
-];
+function topTrigger(entries: { trigger: string }[]) {
+  if (entries.length === 0) {
+    return 'No data yet';
+  }
 
-const swatches = [
-  { name: 'Aarambh Teal', color: '#0F766E' },
-  { name: 'Success Green', color: '#22C55E' },
-  { name: 'Info Blue', color: '#38BDF8' },
-];
+  const counts = entries.reduce<Record<string, number>>((acc, entry) => {
+    acc[entry.trigger] = (acc[entry.trigger] ?? 0) + 1;
+    return acc;
+  }, {});
 
-const freeFeatures = ['Streak tracker', 'Rescue button', 'Private journal', 'Basic insights'];
-const plusFeatures = ['AI coach', 'Weekly summary', 'Custom plan', 'Partner support'];
+  return Object.entries(counts).sort((a, b) => b[1] - a[1])[0]?.[0] ?? 'No data yet';
+}
 
-export default function InsightsScreen() {
+export default function ProgressScreen() {
   const theme = useTheme();
   const safeAreaInsets = useSafeAreaInsets();
+  const { state, currentStreak } = useAppState();
+  const rescueCount = state.rescueSessions.length;
+  const reducedCount = state.rescueSessions.filter((session) => session.reduced).length;
+  const successRate = rescueCount === 0 ? 0 : Math.round((reducedCount / rescueCount) * 100);
+  const resetCount = state.journalEntries.filter((entry) => entry.reset).length;
 
   return (
     <ScrollView
@@ -36,304 +39,137 @@ export default function InsightsScreen() {
           paddingBottom: safeAreaInsets.bottom + BottomTabInset + Spacing.four,
         },
       ]}>
-      <View style={[styles.backgroundGlow, { backgroundColor: theme.accentSoft }]} />
+      <View style={[styles.glow, { backgroundColor: theme.accentSoft }]} />
+      <View style={styles.container}>
+        <ThemedText type="small" themeColor="textSecondary">
+          Recovery intelligence
+        </ThemedText>
+        <ThemedText type="subtitle">Progress</ThemedText>
 
-      <ThemedView style={styles.container}>
-        <View style={styles.titleRow}>
-          <View style={styles.titleCopy}>
-            <ThemedText type="small" themeColor="textSecondary">
-              Recovery intelligence
-            </ThemedText>
-            <ThemedText type="subtitle" style={styles.heading}>
-              Progress & Coach
-            </ThemedText>
-          </View>
-          <View style={[styles.badge, { backgroundColor: theme.accentSoft }]}>
-            <ThemedText type="smallBold" style={{ color: theme.accentStrong }}>
-              Free first
-            </ThemedText>
-          </View>
+        <View style={styles.metricGrid}>
+          <Metric label="Current streak" value={`${currentStreak}`} detail="days" />
+          <Metric label="Best streak" value={`${Math.max(state.bestStreak, currentStreak)}`} detail="days" />
+          <Metric label="Rescue sessions" value={`${rescueCount}`} detail="completed" />
+          <Metric label="Success rate" value={`${successRate}%`} detail="urge reduced" />
         </View>
 
-        <View style={styles.patternGrid}>
-          {patterns.map((pattern) => (
-            <View
-              key={pattern.label}
-              style={[styles.patternCard, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
-              <ThemedText type="small" themeColor="textSecondary">
-                {pattern.label}
-              </ThemedText>
-              <ThemedText style={[styles.patternValue, { color: theme.accent }]}>
-                {pattern.value}
-              </ThemedText>
-              <ThemedText type="small" themeColor="textSecondary">
-                {pattern.detail}
-              </ThemedText>
-            </View>
-          ))}
-        </View>
-
-        <View style={[styles.coachCard, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
-          <View style={styles.coachHeader}>
-            <View style={[styles.iconBubble, { backgroundColor: theme.accentSoft }]}>
-              <SymbolView
-                name={{ ios: 'sparkles', android: 'auto_awesome', web: 'auto_awesome' }}
-                tintColor={theme.accent}
-                size={24}
-              />
-            </View>
-            <View style={styles.titleCopy}>
-              <ThemedText type="smallBold">AI accountability coach</ThemedText>
-              <ThemedText type="small" themeColor="textSecondary">
-                Paid later, not mandatory for basic recovery.
-              </ThemedText>
-            </View>
+        <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
+          <View style={styles.cardHeader}>
+            <ThemedText type="smallBold">Trigger pattern</ThemedText>
+            <SymbolView
+              name={{ ios: 'chart.bar.fill', android: 'bar_chart', web: 'bar_chart' }}
+              tintColor={theme.accent}
+              size={24}
+            />
           </View>
-          <View style={[styles.chatBubble, { backgroundColor: theme.backgroundElement }]}>
-            <ThemedText type="small">I need a reset.</ThemedText>
-          </View>
-          <View style={[styles.chatBubble, styles.replyBubble, { backgroundColor: theme.accentSoft }]}>
-            <ThemedText type="small">
-              Pause. You only need to win the next few minutes. Stand up, breathe slowly, and
-              choose one small replacement action.
-            </ThemedText>
-          </View>
-        </View>
-
-        <View style={[styles.panel, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
-          <View style={styles.sectionHeader}>
-            <ThemedText type="smallBold">Theme Colors</ThemedText>
-            <ThemedText type="small" themeColor="textSecondary">
-              easy to change
-            </ThemedText>
-          </View>
-          <View style={styles.swatchRow}>
-            {swatches.map((swatch) => (
-              <View key={swatch.name} style={styles.swatchItem}>
-                <View style={[styles.swatch, { backgroundColor: swatch.color }]} />
-                <ThemedText type="small" style={styles.swatchLabel}>
-                  {swatch.name}
-                </ThemedText>
-              </View>
-            ))}
-          </View>
-        </View>
-
-        <View style={styles.planGrid}>
-          <PlanCard title="Free" features={freeFeatures} accent={theme.accent} />
-          <PlanCard title="Plus" features={plusFeatures} accent="#7C5CFF" />
-        </View>
-
-        <View style={[styles.safetyCard, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
-          <SymbolView
-            name={{ ios: 'heart.text.square', android: 'health_and_safety', web: 'health_and_safety' }}
-            tintColor={theme.danger}
-            size={24}
-          />
-          <ThemedText type="small" style={styles.safetyText}>
-            Aarambh+ is for habit support and self-control, not medical treatment. If you feel
-            depressed, anxious, unsafe, or out of control, reach out to a qualified professional or
-            trusted person.
+          <ThemedText style={[styles.bigValue, { color: theme.accent }]}>{topTrigger(state.journalEntries)}</ThemedText>
+          <ThemedText type="small" themeColor="textSecondary">
+            Most common trigger from saved journal check-ins.
           </ThemedText>
         </View>
-      </ThemedView>
+
+        <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
+          <ThemedText type="smallBold">Weekly snapshot</ThemedText>
+          <View style={styles.snapshotRow}>
+            <Snapshot label="Journal entries" value={state.journalEntries.length} />
+            <Snapshot label="Resets logged" value={resetCount} />
+            <Snapshot label="Risk time" value="11 PM" />
+          </View>
+        </View>
+      </View>
     </ScrollView>
   );
 }
 
-function PlanCard({
-  title,
-  features,
-  accent,
-}: {
-  title: string;
-  features: string[];
-  accent: string;
-}) {
+function Metric({ label, value, detail }: { label: string; value: string; detail: string }) {
   const theme = useTheme();
 
   return (
-    <View style={[styles.planCard, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
-      <View style={[styles.planAccent, { backgroundColor: accent }]} />
-      <ThemedText type="smallBold">{title}</ThemedText>
-      <View style={styles.featureList}>
-        {features.map((feature) => (
-          <View key={feature} style={styles.featureRow}>
-            <View style={[styles.dot, { backgroundColor: accent }]} />
-            <ThemedText type="small" style={styles.featureText}>
-              {feature}
-            </ThemedText>
-          </View>
-        ))}
-      </View>
+    <View style={[styles.metricCard, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
+      <ThemedText type="small" themeColor="textSecondary">
+        {label}
+      </ThemedText>
+      <ThemedText style={[styles.metricValue, { color: theme.accent }]}>{value}</ThemedText>
+      <ThemedText type="small" themeColor="textSecondary">
+        {detail}
+      </ThemedText>
+    </View>
+  );
+}
+
+function Snapshot({ label, value }: { label: string; value: string | number }) {
+  return (
+    <View style={styles.snapshotItem}>
+      <ThemedText type="smallBold">{value}</ThemedText>
+      <ThemedText type="small" themeColor="textSecondary">
+        {label}
+      </ThemedText>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
+  screen: { flex: 1 },
   content: {
     alignItems: 'center',
     overflow: 'hidden',
-    paddingHorizontal: Spacing.three,
+    paddingHorizontal: Spacing.two,
   },
-  backgroundGlow: {
-    borderRadius: 120,
-    height: 220,
-    left: -90,
-    opacity: 0.55,
+  glow: {
+    borderRadius: 180,
+    height: 300,
+    left: -140,
+    opacity: 0.7,
     position: 'absolute',
-    top: -70,
-    width: 220,
+    top: -100,
+    width: 300,
   },
   container: {
     gap: Spacing.three,
     maxWidth: MaxContentWidth,
     width: '100%',
   },
-  titleRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: Spacing.three,
-    justifyContent: 'space-between',
-  },
-  titleCopy: {
-    flex: 1,
-    gap: Spacing.one,
-  },
-  heading: {
-    fontSize: 28,
-    lineHeight: 36,
-  },
-  badge: {
-    borderRadius: 14,
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
-  },
-  patternGrid: {
+  metricGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: Spacing.two,
   },
-  patternCard: {
-    borderRadius: 20,
-    borderWidth: 1,
-    flexBasis: '31%',
-    flexGrow: 1,
-    gap: Spacing.one,
-    minWidth: 148,
-    padding: Spacing.three,
-  },
-  patternValue: {
-    fontSize: 28,
-    fontWeight: 900,
-    lineHeight: 34,
-  },
-  coachCard: {
-    borderRadius: 20,
-    borderWidth: 1,
-    gap: Spacing.three,
-    padding: Spacing.three,
-  },
-  coachHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: Spacing.two,
-  },
-  iconBubble: {
-    alignItems: 'center',
-    borderRadius: 24,
-    height: 48,
-    justifyContent: 'center',
-    width: 48,
-  },
-  chatBubble: {
-    alignSelf: 'flex-start',
-    borderRadius: 18,
-    maxWidth: '88%',
-    padding: Spacing.three,
-  },
-  replyBubble: {
-    alignSelf: 'flex-end',
-  },
-  panel: {
-    borderRadius: 20,
-    borderWidth: 1,
-    gap: Spacing.three,
-    padding: Spacing.three,
-  },
-  sectionHeader: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: Spacing.two,
-    justifyContent: 'space-between',
-  },
-  swatchRow: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.three,
-  },
-  swatchItem: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: Spacing.two,
-    minWidth: 160,
-  },
-  swatch: {
-    borderRadius: 14,
-    height: 28,
-    width: 28,
-  },
-  swatchLabel: {
-    flex: 1,
-  },
-  planGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: Spacing.two,
-  },
-  planCard: {
+  metricCard: {
     borderRadius: 20,
     borderWidth: 1,
     flexBasis: '48%',
     flexGrow: 1,
-    gap: Spacing.two,
-    minWidth: 164,
-    overflow: 'hidden',
+    gap: Spacing.one,
+    minWidth: 150,
     padding: Spacing.three,
   },
-  planAccent: {
-    height: 4,
-    marginHorizontal: -Spacing.three,
-    marginTop: -Spacing.three,
+  metricValue: {
+    fontSize: 34,
+    fontWeight: 900,
+    lineHeight: 40,
   },
-  featureList: {
-    gap: Spacing.two,
-  },
-  featureRow: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: Spacing.two,
-  },
-  dot: {
-    borderRadius: 4,
-    height: 8,
-    width: 8,
-  },
-  featureText: {
-    flex: 1,
-  },
-  safetyCard: {
-    alignItems: 'flex-start',
+  card: {
     borderRadius: 20,
     borderWidth: 1,
-    flexDirection: 'row',
     gap: Spacing.two,
     padding: Spacing.three,
   },
-  safetyText: {
+  cardHeader: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  bigValue: {
+    fontSize: 30,
+    fontWeight: 900,
+    lineHeight: 36,
+  },
+  snapshotRow: {
+    flexDirection: 'row',
+    gap: Spacing.two,
+  },
+  snapshotItem: {
     flex: 1,
+    gap: Spacing.one,
   },
 });

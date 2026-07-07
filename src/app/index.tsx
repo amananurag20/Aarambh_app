@@ -1,4 +1,5 @@
 import { SymbolView } from 'expo-symbols';
+import { router } from 'expo-router';
 import { type ComponentProps, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -6,6 +7,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
+import { useAppState } from '@/hooks/app-state';
 import { useTheme } from '@/hooks/use-theme';
 
 const week = [
@@ -24,9 +26,9 @@ type SymbolName = ComponentProps<typeof SymbolView>['name'];
 export default function HomeScreen() {
   const theme = useTheme();
   const safeAreaInsets = useSafeAreaInsets();
+  const { currentStreak, saveJournalEntry } = useAppState();
   const [selectedTrigger, setSelectedTrigger] = useState(triggers[0]);
   const [note, setNote] = useState('');
-  const [urgeMode, setUrgeMode] = useState(false);
   const { width } = useWindowDimensions();
   const compactStreak = width < 430;
 
@@ -61,7 +63,9 @@ export default function HomeScreen() {
             <View style={styles.streakCopy}>
               <ThemedText type="smallBold">Current Streak</ThemedText>
               <View style={styles.streakRow}>
-                <ThemedText style={[styles.streakNumber, { color: theme.accent }]}>17</ThemedText>
+                <ThemedText style={[styles.streakNumber, { color: theme.accent }]}>
+                  {currentStreak}
+                </ThemedText>
                 <ThemedText type="subtitle" style={styles.daysText}>
                   Days
                 </ThemedText>
@@ -106,35 +110,27 @@ export default function HomeScreen() {
             title="Urge Button"
             detail="Need help right now?"
             icon={{ ios: 'bolt.fill', android: 'bolt', web: 'bolt' }}
-            onPress={() => setUrgeMode((current) => !current)}
-            active={urgeMode}
+            onPress={() => router.push('/rescue')}
           />
           <ActionTile
             title="AI Coach"
             detail="Chat with your coach"
             icon={{ ios: 'message.fill', android: 'chat', web: 'chat' }}
+            onPress={() => router.push('/coach')}
           />
           <ActionTile
             title="Journal"
             detail="Write your thoughts"
             icon={{ ios: 'doc.text.fill', android: 'edit_note', web: 'edit_note' }}
+            onPress={() => router.push('/journal')}
           />
           <ActionTile
             title="Progress"
             detail="See your improvement"
             icon={{ ios: 'chart.bar.fill', android: 'bar_chart', web: 'bar_chart' }}
+            onPress={() => router.push('/explore')}
           />
         </View>
-
-        {urgeMode && (
-          <View style={[styles.urgePanel, { backgroundColor: theme.accentSoft, borderColor: theme.accent }]}>
-            <ThemedText type="smallBold">5-minute rescue started</ThemedText>
-            <ThemedText type="small">
-              Breathe for 60 seconds, drink water, and move away from the trigger. Just win this
-              small moment.
-            </ThemedText>
-          </View>
-        )}
 
         <View style={[styles.missionCard, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
           <View style={styles.missionHeader}>
@@ -204,6 +200,25 @@ export default function HomeScreen() {
               },
             ]}
           />
+          <Pressable
+            onPress={() => {
+              if (!note.trim()) {
+                return;
+              }
+              saveJournalEntry({
+                mood: 'Quick note',
+                trigger: selectedTrigger,
+                energy: 'Medium',
+                sleep: 'Okay',
+                note,
+                helped: '',
+                reset: false,
+              });
+              setNote('');
+            }}
+            style={[styles.quickSaveButton, { backgroundColor: theme.accent }]}>
+            <ThemedText style={styles.quickSaveText}>Save note</ThemedText>
+          </Pressable>
         </View>
       </ThemedView>
     </ScrollView>
@@ -441,6 +456,16 @@ const styles = StyleSheet.create({
     minHeight: 104,
     padding: Spacing.three,
     textAlignVertical: 'top',
+  },
+  quickSaveButton: {
+    alignItems: 'center',
+    borderRadius: 14,
+    minHeight: 48,
+    justifyContent: 'center',
+  },
+  quickSaveText: {
+    color: '#ffffff',
+    fontWeight: 800,
   },
   pressed: {
     opacity: 0.76,

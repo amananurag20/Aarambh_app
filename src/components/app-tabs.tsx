@@ -18,8 +18,8 @@ export default function AppTabs() {
         />
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="coach">
-        <NativeTabs.Trigger.Label>Coach</NativeTabs.Trigger.Label>
+      <NativeTabs.Trigger name="rescue">
+        <NativeTabs.Trigger.Label>Rescue</NativeTabs.Trigger.Label>
       </NativeTabs.Trigger>
 
       <NativeTabs.Trigger name="journal">

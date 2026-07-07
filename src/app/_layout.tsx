@@ -3,6 +3,7 @@ import * as SplashScreen from 'expo-splash-screen';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import AppTabs from '@/components/app-tabs';
+import { AppStateProvider } from '@/hooks/app-state';
 import { AppThemeProvider, useAppTheme } from '@/hooks/theme-context';
 
 SplashScreen.preventAutoHideAsync();
@@ -20,8 +21,10 @@ function ThemedLayout() {
 
   return (
     <ThemeProvider value={themeId === 'calmLight' ? DefaultTheme : DarkTheme}>
+      <AppStateProvider>
         <AnimatedSplashOverlay />
         <AppTabs />
+      </AppStateProvider>
     </ThemeProvider>
   );
 }
