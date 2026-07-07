@@ -36,8 +36,8 @@ export default function HomeScreen() {
       contentContainerStyle={[
         styles.content,
         {
-          paddingTop: safeAreaInsets.top + Spacing.four,
-          paddingBottom: safeAreaInsets.bottom + BottomTabInset + Spacing.four,
+          paddingTop: safeAreaInsets.top + Spacing.three,
+          paddingBottom: safeAreaInsets.bottom + BottomTabInset + Spacing.two,
         },
       ]}>
       <View style={[styles.backgroundGlow, { backgroundColor: theme.accentSoft }]} />
@@ -256,7 +256,7 @@ const styles = StyleSheet.create({
   content: {
     alignItems: 'center',
     overflow: 'hidden',
-    paddingHorizontal: Spacing.four,
+    paddingHorizontal: Spacing.two,
   },
   backgroundGlow: {
     borderRadius: 180,
@@ -268,26 +268,26 @@ const styles = StyleSheet.create({
     width: 320,
   },
   container: {
-    gap: Spacing.four,
-    maxWidth: 560,
+    gap: Spacing.three,
+    maxWidth: 680,
     width: '100%',
   },
   header: {
     gap: Spacing.one,
   },
   heading: {
-    fontSize: 28,
-    lineHeight: 36,
+    fontSize: 26,
+    lineHeight: 32,
   },
   tagline: {
-    maxWidth: 520,
+    maxWidth: 640,
   },
   streakCard: {
     borderRadius: 20,
     borderWidth: 1,
-    gap: Spacing.four,
+    gap: Spacing.three,
     overflow: 'hidden',
-    padding: Spacing.four,
+    padding: Spacing.three,
     shadowColor: '#000000',
     shadowOffset: { width: 0, height: 14 },
     shadowOpacity: 0.3,
@@ -326,16 +326,16 @@ const styles = StyleSheet.create({
     borderRadius: 58,
     borderWidth: 8,
     flexShrink: 0,
-    height: 124,
+    height: 116,
     justifyContent: 'center',
-    width: 124,
+    width: 116,
   },
   progressCore: {
     alignItems: 'center',
     borderRadius: 40,
-    height: 82,
+    height: 78,
     justifyContent: 'center',
-    width: 82,
+    width: 78,
   },
   weekRow: {
     flexDirection: 'row',
@@ -363,19 +363,19 @@ const styles = StyleSheet.create({
   actionGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: Spacing.three,
+    gap: Spacing.two,
   },
   actionTile: {
     alignItems: 'center',
     borderRadius: 20,
     borderWidth: 1,
-    flexBasis: '46%',
+    flexBasis: '48%',
     flexDirection: 'row',
     flexGrow: 1,
     gap: Spacing.two,
     justifyContent: 'space-between',
-    minHeight: 128,
-    minWidth: 150,
+    minHeight: 104,
+    minWidth: 0,
     padding: Spacing.three,
   },
   actionCopy: {
@@ -398,7 +398,7 @@ const styles = StyleSheet.create({
   missionCard: {
     borderRadius: 20,
     borderWidth: 1,
-    gap: Spacing.three,
+    gap: Spacing.two,
     padding: Spacing.three,
   },
   missionHeader: {
@@ -407,7 +407,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   quote: {
-    fontSize: 23,
+    fontSize: 21,
     fontWeight: 800,
     lineHeight: 32,
   },
