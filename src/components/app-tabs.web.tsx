@@ -11,7 +11,8 @@ import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from './themed-text';
 
-import { Colors, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
 
 const tabs = [
   {
@@ -72,7 +73,7 @@ function TabButton({
   label: string;
   icon: (typeof tabs)[number]['icon'];
 }) {
-  const colors = Colors.dark;
+  const colors = useTheme();
 
   return (
     <Pressable
@@ -93,7 +94,7 @@ function TabButton({
 }
 
 function CustomTabList(props: TabListProps) {
-  const colors = Colors.dark;
+  const colors = useTheme();
 
   return (
     <View pointerEvents="box-none" style={styles.tabListContainer}>

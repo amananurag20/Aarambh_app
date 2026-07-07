@@ -3,7 +3,8 @@
  * https://docs.expo.dev/guides/color-schemes/
  */
 
-import { Colors } from '@/constants/theme';
+import { useAppTheme } from '@/hooks/theme-context';
+
 export function useTheme() {
-  return Colors.dark;
+  return useAppTheme().theme;
 }
