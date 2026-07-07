@@ -1,6 +1,6 @@
 import { SymbolView } from 'expo-symbols';
-import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, Easing, Pressable, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -9,6 +9,7 @@ import { useAppState } from '@/hooks/app-state';
 import { useTheme } from '@/hooks/use-theme';
 
 const totalSeconds = 300;
+const breathCycleSeconds = 12;
 const steps = ['Breathe slowly', 'Drink water', 'Walk away', 'Write the trigger'];
 
 function formatTime(seconds: number) {
@@ -24,6 +25,52 @@ export default function RescueScreen() {
   const [secondsLeft, setSecondsLeft] = useState(totalSeconds);
   const [running, setRunning] = useState(false);
   const [finished, setFinished] = useState(false);
+  const breathScale = useRef(new Animated.Value(0)).current;
+  const elapsedSeconds = totalSeconds - secondsLeft;
+  const breathPosition = elapsedSeconds % breathCycleSeconds;
+  const breathPhase =
+    breathPosition < 4
+      ? 'Breathe in'
+      : breathPosition < 6
+        ? 'Hold'
+        : breathPosition < 10
+          ? 'Breathe out'
+          : 'Hold';
+  const breathHint =
+    breathPhase === 'Breathe in'
+      ? 'Let the circle rise.'
+      : breathPhase === 'Breathe out'
+        ? 'Let it go down slowly.'
+        : 'Stay still and relaxed.';
+
+  useEffect(() => {
+    if (!running) {
+      breathScale.stopAnimation();
+      return;
+    }
+
+    const animation = Animated.loop(
+      Animated.sequence([
+        Animated.timing(breathScale, {
+          toValue: 1,
+          duration: 4000,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.delay(2000),
+        Animated.timing(breathScale, {
+          toValue: 0,
+          duration: 4000,
+          easing: Easing.inOut(Easing.ease),
+          useNativeDriver: true,
+        }),
+        Animated.delay(2000),
+      ]),
+    );
+
+    animation.start();
+    return () => animation.stop();
+  }, [breathScale, running]);
 
   useEffect(() => {
     if (!running || secondsLeft <= 0) {
@@ -62,9 +109,52 @@ export default function RescueScreen() {
         <ThemedText type="subtitle">Start 5-Minute Rescue</ThemedText>
 
         <View style={[styles.timerCard, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
-          <View style={[styles.breathingCircle, { borderColor: theme.accent, backgroundColor: theme.accentSoft }]}>
-            <ThemedText style={[styles.timer, { color: theme.accentStrong }]}>
-              {formatTime(secondsLeft)}
+          <View style={styles.breathingStage}>
+            <Animated.View
+              style={[
+                styles.breathingCircle,
+                {
+                  borderColor: theme.accent,
+                  backgroundColor: theme.accentSoft,
+                  transform: [
+                    {
+                      scale: breathScale.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [0.86, 1.14],
+                      }),
+                    },
+                  ],
+                },
+              ]}>
+              <ThemedText style={[styles.timer, { color: theme.accentStrong }]}>
+                {formatTime(secondsLeft)}
+              </ThemedText>
+            </Animated.View>
+            <View style={[styles.guideLine, { backgroundColor: theme.backgroundSelected }]}>
+              <Animated.View
+                style={[
+                  styles.guideDot,
+                  {
+                    backgroundColor: theme.accentStrong,
+                    transform: [
+                      {
+                        translateY: breathScale.interpolate({
+                          inputRange: [0, 1],
+                          outputRange: [58, -58],
+                        }),
+                      },
+                    ],
+                  },
+                ]}
+              />
+            </View>
+          </View>
+          <View style={styles.phaseBlock}>
+            <ThemedText style={[styles.phaseText, { color: theme.accentStrong }]}>
+              {running ? breathPhase : 'Ready'}
+            </ThemedText>
+            <ThemedText type="small" themeColor="textSecondary" style={styles.centerText}>
+              {running ? breathHint : 'Tap begin and follow the breathing circle.'}
             </ThemedText>
           </View>
           <ThemedText type="small" themeColor="textSecondary" style={styles.centerText}>
@@ -151,6 +241,12 @@ const styles = StyleSheet.create({
     gap: Spacing.three,
     padding: Spacing.four,
   },
+  breathingStage: {
+    alignItems: 'center',
+    height: 230,
+    justifyContent: 'center',
+    width: '100%',
+  },
   breathingCircle: {
     alignItems: 'center',
     borderRadius: 92,
@@ -159,9 +255,34 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: 184,
   },
+  guideLine: {
+    borderRadius: 4,
+    height: 140,
+    opacity: 0.8,
+    position: 'absolute',
+    right: Spacing.three,
+    width: 6,
+  },
+  guideDot: {
+    borderRadius: 16,
+    height: 32,
+    left: -13,
+    position: 'absolute',
+    top: 54,
+    width: 32,
+  },
   timer: {
     fontSize: 46,
     fontWeight: 900,
+  },
+  phaseBlock: {
+    alignItems: 'center',
+    gap: Spacing.one,
+  },
+  phaseText: {
+    fontSize: 26,
+    fontWeight: 900,
+    lineHeight: 32,
   },
   centerText: {
     textAlign: 'center',
