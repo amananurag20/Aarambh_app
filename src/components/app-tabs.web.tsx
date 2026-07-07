@@ -7,7 +7,7 @@ import {
   TabListProps,
 } from 'expo-router/ui';
 import { SymbolView } from 'expo-symbols';
-import { Pressable, StyleSheet, useColorScheme, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 
 import { ThemedText } from './themed-text';
 
@@ -72,8 +72,7 @@ function TabButton({
   label: string;
   icon: (typeof tabs)[number]['icon'];
 }) {
-  const scheme = useColorScheme();
-  const colors = Colors[scheme === 'unspecified' ? 'light' : scheme];
+  const colors = Colors.dark;
 
   return (
     <Pressable
@@ -94,8 +93,7 @@ function TabButton({
 }
 
 function CustomTabList(props: TabListProps) {
-  const scheme = useColorScheme();
-  const colors = Colors[scheme === 'unspecified' ? 'light' : scheme];
+  const colors = Colors.dark;
 
   return (
     <View pointerEvents="box-none" style={styles.tabListContainer}>
@@ -121,8 +119,9 @@ const styles = StyleSheet.create({
     left: 0,
     paddingBottom: Spacing.three,
     paddingHorizontal: Spacing.three,
-    position: 'absolute',
+    position: 'fixed' as 'absolute',
     right: 0,
+    zIndex: 50,
   },
   innerContainer: {
     borderRadius: 24,

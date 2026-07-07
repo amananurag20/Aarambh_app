@@ -1,6 +1,6 @@
 import { SymbolView } from 'expo-symbols';
 import { type ComponentProps, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, TextInput, View } from 'react-native';
+import { Pressable, ScrollView, StyleSheet, TextInput, useWindowDimensions, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { ThemedText } from '@/components/themed-text';
@@ -27,6 +27,8 @@ export default function HomeScreen() {
   const [selectedTrigger, setSelectedTrigger] = useState(triggers[0]);
   const [note, setNote] = useState('');
   const [urgeMode, setUrgeMode] = useState(false);
+  const { width } = useWindowDimensions();
+  const compactStreak = width < 430;
 
   return (
     <ScrollView
@@ -34,7 +36,7 @@ export default function HomeScreen() {
       contentContainerStyle={[
         styles.content,
         {
-          paddingTop: safeAreaInsets.top + Spacing.three,
+          paddingTop: safeAreaInsets.top + Spacing.four,
           paddingBottom: safeAreaInsets.bottom + BottomTabInset + Spacing.four,
         },
       ]}>
@@ -42,55 +44,40 @@ export default function HomeScreen() {
 
       <ThemedView style={styles.container}>
         <View style={styles.header}>
-          <View style={[styles.brandMark, { backgroundColor: theme.accent }]}>
-            <SymbolView
-              name={{ ios: 'shield.fill', android: 'shield', web: 'shield' }}
-              tintColor="#ffffff"
-              size={24}
-            />
-          </View>
-          <View style={styles.headerText}>
-            <ThemedText type="small" themeColor="textSecondary">
-              Aarambh+
-            </ThemedText>
-            <ThemedText type="subtitle" style={styles.heading}>
-              Good evening, Anurag
-            </ThemedText>
-          </View>
-          <Pressable
-            style={({ pressed }) => [
-              styles.signInButton,
-              { borderColor: theme.cardBorder, backgroundColor: theme.card },
-              pressed && styles.pressed,
-            ]}>
-            <ThemedText type="smallBold">Sign in</ThemedText>
-          </Pressable>
+          <ThemedText type="subtitle" style={styles.heading}>
+            Good Morning, Anurag
+          </ThemedText>
+          <ThemedText themeColor="textSecondary" style={styles.tagline}>
+            Every day you choose progress.
+          </ThemedText>
         </View>
 
-        <ThemedText themeColor="textSecondary" style={styles.tagline}>
-          One day stronger. Every reset is private, calm, and judgment-free.
-        </ThemedText>
-
-        <View style={[styles.streakCard, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
-          <View style={styles.streakCopy}>
-            <ThemedText type="smallBold">Current Streak</ThemedText>
-            <View style={styles.streakRow}>
-              <ThemedText style={[styles.streakNumber, { color: theme.accent }]}>17</ThemedText>
-              <ThemedText type="subtitle" style={styles.daysText}>
-                Days
+        <View
+          style={[
+            styles.streakCard,
+            { backgroundColor: theme.card, borderColor: theme.cardBorder },
+          ]}>
+          <View style={[styles.streakTop, compactStreak && styles.streakTopCompact]}>
+            <View style={styles.streakCopy}>
+              <ThemedText type="smallBold">Current Streak</ThemedText>
+              <View style={styles.streakRow}>
+                <ThemedText style={[styles.streakNumber, { color: theme.accent }]}>17</ThemedText>
+                <ThemedText type="subtitle" style={styles.daysText}>
+                  Days
+                </ThemedText>
+              </View>
+              <ThemedText type="small" themeColor="textSecondary">
+                Keep going, you&apos;re doing great!
               </ThemedText>
             </View>
-            <ThemedText type="small" themeColor="textSecondary">
-              Strong progress. Your next step is already clear.
-            </ThemedText>
-          </View>
-          <View style={[styles.progressRing, { borderColor: theme.accent }]}>
-            <View style={[styles.progressCore, { backgroundColor: theme.accentSoft }]}>
-              <SymbolView
-                name={{ ios: 'flame.fill', android: 'local_fire_department', web: 'local_fire_department' }}
-                tintColor={theme.accent}
-                size={34}
-              />
+            <View style={[styles.progressRing, { borderColor: theme.accent }]}>
+              <View style={[styles.progressCore, { backgroundColor: theme.accentSoft }]}>
+                <SymbolView
+                  name={{ ios: 'shield.fill', android: 'shield', web: 'shield' }}
+                  tintColor={theme.accent}
+                  size={36}
+                />
+              </View>
             </View>
           </View>
           <View style={styles.weekRow}>
@@ -116,15 +103,15 @@ export default function HomeScreen() {
 
         <View style={styles.actionGrid}>
           <ActionTile
-            title="Rescue"
-            detail="5-minute reset"
+            title="Urge Button"
+            detail="Need help right now?"
             icon={{ ios: 'bolt.fill', android: 'bolt', web: 'bolt' }}
             onPress={() => setUrgeMode((current) => !current)}
             active={urgeMode}
           />
           <ActionTile
             title="AI Coach"
-            detail="Calm guidance"
+            detail="Chat with your coach"
             icon={{ ios: 'message.fill', android: 'chat', web: 'chat' }}
           />
           <ActionTile
@@ -134,7 +121,7 @@ export default function HomeScreen() {
           />
           <ActionTile
             title="Progress"
-            detail="See improvement"
+            detail="See your improvement"
             icon={{ ios: 'chart.bar.fill', android: 'bar_chart', web: 'bar_chart' }}
           />
         </View>
@@ -159,7 +146,7 @@ export default function HomeScreen() {
             />
           </View>
           <ThemedText style={[styles.quote, { color: theme.accentStrong }]}>
-            One calm reset keeps the streak alive.
+            “Discipline today, freedom tomorrow.”
           </ThemedText>
         </View>
 
@@ -269,49 +256,28 @@ const styles = StyleSheet.create({
   content: {
     alignItems: 'center',
     overflow: 'hidden',
-    paddingHorizontal: Spacing.three,
+    paddingHorizontal: Spacing.four,
   },
   backgroundGlow: {
-    borderRadius: 120,
-    height: 220,
-    opacity: 0.55,
+    borderRadius: 180,
+    height: 320,
+    opacity: 0.75,
     position: 'absolute',
-    right: -90,
-    top: -70,
-    width: 220,
+    right: -140,
+    top: -120,
+    width: 320,
   },
   container: {
-    gap: Spacing.three,
-    maxWidth: MaxContentWidth,
+    gap: Spacing.four,
+    maxWidth: 560,
     width: '100%',
   },
   header: {
-    alignItems: 'center',
-    flexDirection: 'row',
-    gap: Spacing.three,
-  },
-  brandMark: {
-    alignItems: 'center',
-    borderRadius: 18,
-    height: 54,
-    justifyContent: 'center',
-    shadowColor: '#14B8A6',
-    shadowOpacity: 0.32,
-    shadowRadius: 18,
-    width: 54,
-  },
-  headerText: {
-    flex: 1,
+    gap: Spacing.one,
   },
   heading: {
-    fontSize: 26,
-    lineHeight: 34,
-  },
-  signInButton: {
-    borderRadius: 14,
-    borderWidth: 1,
-    paddingHorizontal: Spacing.three,
-    paddingVertical: Spacing.two,
+    fontSize: 28,
+    lineHeight: 36,
   },
   tagline: {
     maxWidth: 520,
@@ -319,14 +285,27 @@ const styles = StyleSheet.create({
   streakCard: {
     borderRadius: 20,
     borderWidth: 1,
-    gap: Spacing.three,
-    padding: Spacing.three,
+    gap: Spacing.four,
+    overflow: 'hidden',
+    padding: Spacing.four,
     shadowColor: '#000000',
-    shadowOpacity: 0.18,
-    shadowRadius: 18,
+    shadowOffset: { width: 0, height: 14 },
+    shadowOpacity: 0.3,
+    shadowRadius: 30,
+  },
+  streakTop: {
+    alignItems: 'center',
+    flexDirection: 'row',
+    gap: Spacing.three,
+    justifyContent: 'space-between',
+  },
+  streakTopCompact: {
+    alignItems: 'flex-start',
   },
   streakCopy: {
+    flex: 1,
     gap: Spacing.one,
+    minWidth: 0,
   },
   streakRow: {
     alignItems: 'baseline',
@@ -334,36 +313,38 @@ const styles = StyleSheet.create({
     gap: Spacing.two,
   },
   streakNumber: {
-    fontSize: 46,
+    fontSize: 38,
     fontWeight: 900,
-    lineHeight: 52,
+    lineHeight: 44,
   },
   daysText: {
+    fontSize: 34,
     lineHeight: 40,
   },
   progressRing: {
     alignItems: 'center',
-    alignSelf: 'flex-end',
-    borderRadius: 54,
+    borderRadius: 58,
     borderWidth: 8,
-    height: 108,
+    flexShrink: 0,
+    height: 124,
     justifyContent: 'center',
-    marginTop: -98,
-    width: 108,
+    width: 124,
   },
   progressCore: {
     alignItems: 'center',
-    borderRadius: 38,
-    height: 76,
+    borderRadius: 40,
+    height: 82,
     justifyContent: 'center',
-    width: 76,
+    width: 82,
   },
   weekRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    paddingTop: Spacing.one,
   },
   weekItem: {
     alignItems: 'center',
+    flex: 1,
     gap: Spacing.one,
   },
   weekDot: {
@@ -382,19 +363,19 @@ const styles = StyleSheet.create({
   actionGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: Spacing.two,
+    gap: Spacing.three,
   },
   actionTile: {
     alignItems: 'center',
     borderRadius: 20,
     borderWidth: 1,
-    flexBasis: '48%',
+    flexBasis: '46%',
     flexDirection: 'row',
     flexGrow: 1,
     gap: Spacing.two,
     justifyContent: 'space-between',
-    minHeight: 112,
-    minWidth: 156,
+    minHeight: 128,
+    minWidth: 150,
     padding: Spacing.three,
   },
   actionCopy: {
