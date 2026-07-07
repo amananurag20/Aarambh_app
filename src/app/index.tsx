@@ -54,7 +54,7 @@ export default function HomeScreen() {
               Aarambh+
             </ThemedText>
             <ThemedText type="subtitle" style={styles.heading}>
-              Good Morning, Anurag
+              Good evening, Anurag
             </ThemedText>
           </View>
           <Pressable
@@ -68,7 +68,7 @@ export default function HomeScreen() {
         </View>
 
         <ThemedText themeColor="textSecondary" style={styles.tagline}>
-          Every day you choose progress. Login is optional for free features.
+          One day stronger. Every reset is private, calm, and judgment-free.
         </ThemedText>
 
         <View style={[styles.streakCard, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
@@ -81,7 +81,7 @@ export default function HomeScreen() {
               </ThemedText>
             </View>
             <ThemedText type="small" themeColor="textSecondary">
-              Keep going, your discipline is getting stronger.
+              Strong progress. Your next step is already clear.
             </ThemedText>
           </View>
           <View style={[styles.progressRing, { borderColor: theme.accent }]}>
@@ -116,15 +116,15 @@ export default function HomeScreen() {
 
         <View style={styles.actionGrid}>
           <ActionTile
-            title="Urge Button"
-            detail="Need help right now?"
+            title="Rescue"
+            detail="5-minute reset"
             icon={{ ios: 'bolt.fill', android: 'bolt', web: 'bolt' }}
             onPress={() => setUrgeMode((current) => !current)}
             active={urgeMode}
           />
           <ActionTile
             title="AI Coach"
-            detail="Plus guidance"
+            detail="Calm guidance"
             icon={{ ios: 'message.fill', android: 'chat', web: 'chat' }}
           />
           <ActionTile
@@ -134,17 +134,17 @@ export default function HomeScreen() {
           />
           <ActionTile
             title="Progress"
-            detail="See patterns"
+            detail="See improvement"
             icon={{ ios: 'chart.bar.fill', android: 'bar_chart', web: 'bar_chart' }}
           />
         </View>
 
         {urgeMode && (
           <View style={[styles.urgePanel, { backgroundColor: theme.accentSoft, borderColor: theme.accent }]}>
-            <ThemedText type="smallBold">Emergency mode started</ThemedText>
+            <ThemedText type="smallBold">5-minute rescue started</ThemedText>
             <ThemedText type="small">
-              Put the phone down, breathe slowly, drink water, and move away from the trigger for
-              10 minutes.
+              Breathe for 60 seconds, drink water, and move away from the trigger. Just win this
+              small moment.
             </ThemedText>
           </View>
         )}
@@ -159,13 +159,13 @@ export default function HomeScreen() {
             />
           </View>
           <ThemedText style={[styles.quote, { color: theme.accentStrong }]}>
-            Discipline today, freedom tomorrow.
+            One calm reset keeps the streak alive.
           </ThemedText>
         </View>
 
         <View style={[styles.panel, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
           <View style={styles.sectionHeader}>
-            <ThemedText type="smallBold">Trigger Check</ThemedText>
+            <ThemedText type="smallBold">Daily Check-in</ThemedText>
             <ThemedText type="small" themeColor="textSecondary">
               free tracker
             </ThemedText>
@@ -206,7 +206,7 @@ export default function HomeScreen() {
             value={note}
             onChangeText={setNote}
             multiline
-            placeholder="What helped you stay steady today?"
+            placeholder="Mood, energy, sleep, trigger, and what helped today."
             placeholderTextColor={theme.textSecondary}
             style={[
               styles.input,
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     height: 54,
     justifyContent: 'center',
-    shadowColor: '#FF8A1F',
+    shadowColor: '#14B8A6',
     shadowOpacity: 0.32,
     shadowRadius: 18,
     width: 54,
@@ -308,7 +308,7 @@ const styles = StyleSheet.create({
     lineHeight: 34,
   },
   signInButton: {
-    borderRadius: 8,
+    borderRadius: 14,
     borderWidth: 1,
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.two,
@@ -317,7 +317,7 @@ const styles = StyleSheet.create({
     maxWidth: 520,
   },
   streakCard: {
-    borderRadius: 8,
+    borderRadius: 20,
     borderWidth: 1,
     gap: Spacing.three,
     padding: Spacing.three,
@@ -386,7 +386,7 @@ const styles = StyleSheet.create({
   },
   actionTile: {
     alignItems: 'center',
-    borderRadius: 8,
+    borderRadius: 20,
     borderWidth: 1,
     flexBasis: '48%',
     flexDirection: 'row',
@@ -409,13 +409,13 @@ const styles = StyleSheet.create({
     width: 48,
   },
   urgePanel: {
-    borderRadius: 8,
+    borderRadius: 20,
     borderWidth: 1,
     gap: Spacing.one,
     padding: Spacing.three,
   },
   missionCard: {
-    borderRadius: 8,
+    borderRadius: 20,
     borderWidth: 1,
     gap: Spacing.three,
     padding: Spacing.three,
@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
     lineHeight: 32,
   },
   panel: {
-    borderRadius: 8,
+    borderRadius: 14,
     borderWidth: 1,
     gap: Spacing.three,
     padding: Spacing.three,
@@ -448,13 +448,13 @@ const styles = StyleSheet.create({
     gap: Spacing.two,
   },
   chip: {
-    borderRadius: 8,
+    borderRadius: 14,
     borderWidth: 1,
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.two,
   },
   input: {
-    borderRadius: 8,
+    borderRadius: 14,
     borderWidth: 1,
     fontSize: 16,
     minHeight: 104,

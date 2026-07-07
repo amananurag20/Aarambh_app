@@ -8,18 +8,18 @@ import { BottomTabInset, MaxContentWidth, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 
 const patterns = [
-  { label: 'Highest risk', value: '11 PM', detail: 'Night phone use is the danger zone.' },
+  { label: 'Risk time', value: '11 PM', detail: 'Evening phone use needs a gentle reset.' },
   { label: 'Main trigger', value: 'Boredom', detail: 'Replace idle time with a 10 min task.' },
   { label: 'Best action', value: 'Walk', detail: 'Most helpful replacement this week.' },
 ];
 
 const swatches = [
-  { name: 'Aarambh Orange', color: '#FF8A1F' },
-  { name: 'Calm Teal', color: '#20D6B0' },
-  { name: 'Focus Blue', color: '#4C8DFF' },
+  { name: 'Aarambh Teal', color: '#0F766E' },
+  { name: 'Success Green', color: '#22C55E' },
+  { name: 'Info Blue', color: '#38BDF8' },
 ];
 
-const freeFeatures = ['Streak tracker', 'Urge button', 'Private journal', 'Basic insights'];
+const freeFeatures = ['Streak tracker', 'Rescue button', 'Private journal', 'Basic insights'];
 const plusFeatures = ['AI coach', 'Weekly summary', 'Custom plan', 'Partner support'];
 
 export default function InsightsScreen() {
@@ -90,19 +90,19 @@ export default function InsightsScreen() {
             </View>
           </View>
           <View style={[styles.chatBubble, { backgroundColor: theme.backgroundElement }]}>
-            <ThemedText type="small">I feel like relapsing.</ThemedText>
+            <ThemedText type="small">I need a reset.</ThemedText>
           </View>
           <View style={[styles.chatBubble, styles.replyBubble, { backgroundColor: theme.accentSoft }]}>
             <ThemedText type="small">
-              Pause. You only need to win the next 10 minutes. Stand up, leave the trigger, and
-              start one replacement action.
+              Pause. You only need to win the next few minutes. Stand up, breathe slowly, and
+              choose one small replacement action.
             </ThemedText>
           </View>
         </View>
 
         <View style={[styles.panel, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
           <View style={styles.sectionHeader}>
-            <ThemedText type="smallBold">Brand Color</ThemedText>
+            <ThemedText type="smallBold">Theme Colors</ThemedText>
             <ThemedText type="small" themeColor="textSecondary">
               easy to change
             </ThemedText>
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     lineHeight: 36,
   },
   badge: {
-    borderRadius: 8,
+    borderRadius: 14,
     paddingHorizontal: Spacing.three,
     paddingVertical: Spacing.two,
   },
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
     gap: Spacing.two,
   },
   patternCard: {
-    borderRadius: 8,
+    borderRadius: 20,
     borderWidth: 1,
     flexBasis: '31%',
     flexGrow: 1,
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     lineHeight: 34,
   },
   coachCard: {
-    borderRadius: 8,
+    borderRadius: 20,
     borderWidth: 1,
     gap: Spacing.three,
     padding: Spacing.three,
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
   },
   chatBubble: {
     alignSelf: 'flex-start',
-    borderRadius: 8,
+    borderRadius: 18,
     maxWidth: '88%',
     padding: Spacing.three,
   },
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
   },
   panel: {
-    borderRadius: 8,
+    borderRadius: 20,
     borderWidth: 1,
     gap: Spacing.three,
     padding: Spacing.three,
@@ -295,7 +295,7 @@ const styles = StyleSheet.create({
     gap: Spacing.two,
   },
   planCard: {
-    borderRadius: 8,
+    borderRadius: 20,
     borderWidth: 1,
     flexBasis: '48%',
     flexGrow: 1,
@@ -327,7 +327,7 @@ const styles = StyleSheet.create({
   },
   safetyCard: {
     alignItems: 'flex-start',
-    borderRadius: 8,
+    borderRadius: 20,
     borderWidth: 1,
     flexDirection: 'row',
     gap: Spacing.two,
