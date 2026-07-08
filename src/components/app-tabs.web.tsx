@@ -47,17 +47,35 @@ const tabs = [
   },
 ] as const;
 
+const registeredRoutes = [
+  ...tabs,
+  {
+    name: 'mindfulness',
+    href: '/mindfulness',
+    hidden: true,
+  },
+] as const;
+
 export default function AppTabs() {
   return (
     <Tabs>
       <TabSlot style={{ height: '100%' }} />
       <TabList asChild>
         <CustomTabList>
-          {tabs.map((tab) => (
-            <TabTrigger key={tab.name} name={tab.name} href={tab.href} asChild>
-              <TabButton label={tab.label} icon={tab.icon} />
-            </TabTrigger>
-          ))}
+          {registeredRoutes.map((tab) =>
+            'hidden' in tab ? (
+              <TabTrigger
+                key={tab.name}
+                name={tab.name}
+                href={tab.href}
+                style={styles.hiddenTrigger}
+              />
+            ) : (
+              <TabTrigger key={tab.name} name={tab.name} href={tab.href} asChild>
+                <TabButton label={tab.label} icon={tab.icon} />
+              </TabTrigger>
+            ),
+          )}
         </CustomTabList>
       </TabList>
     </Tabs>
@@ -153,6 +171,9 @@ const styles = StyleSheet.create({
   tabLabel: {
     fontSize: 12,
     lineHeight: 16,
+  },
+  hiddenTrigger: {
+    display: 'none',
   },
   pressed: {
     opacity: 0.7,

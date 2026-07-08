@@ -132,6 +132,31 @@ export default function HomeScreen() {
           />
         </View>
 
+        <Pressable
+          onPress={() => router.push('/mindfulness')}
+          style={({ pressed }) => [
+            styles.mindfulnessCard,
+            { backgroundColor: theme.card, borderColor: theme.cardBorder },
+            pressed && styles.pressed,
+          ]}>
+          <View style={styles.mindfulnessCopy}>
+            <ThemedText type="smallBold">Mindfulness</ThemedText>
+            <ThemedText style={[styles.mindfulnessTitle, { color: theme.accentStrong }]}>
+              Breath, calm, focus
+            </ThemedText>
+            <ThemedText type="small" themeColor="textSecondary">
+              Quick activities for daily calm before stress becomes an urge.
+            </ThemedText>
+          </View>
+          <View style={[styles.mindfulnessIcon, { backgroundColor: theme.accentSoft }]}>
+            <SymbolView
+              name={{ ios: 'sparkles', android: 'self_improvement', web: 'self_improvement' }}
+              tintColor={theme.accent}
+              size={30}
+            />
+          </View>
+        </Pressable>
+
         <View style={[styles.missionCard, { backgroundColor: theme.card, borderColor: theme.cardBorder }]}>
           <View style={styles.missionHeader}>
             <ThemedText type="smallBold">Today&apos;s Mission</ThemedText>
@@ -403,6 +428,34 @@ const styles = StyleSheet.create({
     height: 48,
     justifyContent: 'center',
     width: 48,
+  },
+  mindfulnessCard: {
+    alignItems: 'center',
+    borderRadius: 20,
+    borderWidth: 1,
+    flexDirection: 'row',
+    gap: Spacing.three,
+    justifyContent: 'space-between',
+    minHeight: 128,
+    padding: Spacing.three,
+  },
+  mindfulnessCopy: {
+    flex: 1,
+    gap: Spacing.one,
+    minWidth: 0,
+  },
+  mindfulnessTitle: {
+    fontSize: 24,
+    fontWeight: 900,
+    lineHeight: 30,
+  },
+  mindfulnessIcon: {
+    alignItems: 'center',
+    borderRadius: 32,
+    flexShrink: 0,
+    height: 64,
+    justifyContent: 'center',
+    width: 64,
   },
   urgePanel: {
     borderRadius: 20,
